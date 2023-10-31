@@ -1,6 +1,6 @@
 # Engine Auto Stop Eliminator Firmware for SUBARU Levorg VN5
 
-This repository contains sources for the engine start-stop system eliminator firmware for SUBARU Levorg VN5, based off of the CANable firwmare.
+This repository contains sources for the engine start-stop system eliminator firmware for SUBARU Levorg VN5, based off of the [CANable firmware](https://github.com/normaldotcom/canable-fw).
 
 ## Building
 
@@ -16,7 +16,7 @@ Your Linux distribution may also have a prebuilt package for `arm-none-eabi-gcc`
 
 ## Flashing with the Bootloader
 
-Simply plug in your CANable with the BOOT jumper enabled (or depress the boot button on the CANable Pro while plugging in). Next, type `make flash` and your CANable will be updated to the engine auto stop eliminator firwmare for SUBARU Levorg VN5. Unplug/replug the device after moving the boot jumper back, and your CANable will be up and running as engine auto stop eliminator for SUBARU Levorg VN5.
+Simply plug in your CANable with the BOOT jumper enabled (or depress the boot button on the CANable Pro while plugging in). Next, type `make flash` and your CANable will be updated to the engine auto stop eliminator firmware for SUBARU Levorg VN5. Unplug/replug the device after moving the boot jumper back, and your CANable will be up and running as engine auto stop eliminator for SUBARU Levorg VN5.
 
 ## License
 
