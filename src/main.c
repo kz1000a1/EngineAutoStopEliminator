@@ -21,7 +21,6 @@ int main(void)
     CAN_RxHeaderTypeDef rx_msg_header;
     uint8_t rx_msg_data[8] = {0};
     uint8_t msg_buf[SLCAN_MTU];
-    uint16_t msg_len;
 
     // Storage for transmit message buffer
     CAN_TxHeaderTypeDef tx_msg_header;
@@ -56,7 +55,7 @@ int main(void)
         // If CAN message receive is pending, process the message
         if(is_can_msg_pending(CAN_RX_FIFO0))
         {
-            // Waste message(s) that received during HAL_delay()
+            // Discard message(s) that received during HAL_delay()
             do {
                 can_rx(&rx_msg_header, rx_msg_data);
             } while(is_can_msg_pending(CAN_RX_FIFO0));
@@ -157,11 +156,32 @@ int main(void)
                         CDC_Transmit_FS(msg_buf, strlen(msg_buf));
 
                         CcuStatus = CAN_FRAME_SENDED;
+                    } else { // Unexpected case
+                        for (uint8_t i=0; i < SLCAN_MTU; i++) {
+                            msg_buf[i] = '\0';
+                        }
+
+                        // Output Warning message
+                        sprintf_(msg_buf, "# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
+                        CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
                     }
+
                     PreviousCanId = rx_msg_header.StdId;
                     break;
-            }
 
+                default: // Unexpected can id
+                    for (uint8_t i=0; i < SLCAN_MTU; i++) {
+                        msg_buf[i] = '\0';
+                    }
+
+                    // Output Warning message
+                    sprintf_(msg_buf, "# Warning: Unexpected can id (0x%03x).\n", rx_msg_header.StdId);
+                    CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
+                    break;
+
+            }
         }
     }
 }
