@@ -17,7 +17,7 @@ GIT_VERSION := $(shell git describe --abbrev=7 --dirty --always --tags)
 GIT_REMOTE := $(shell git config --get remote.origin.url | sed 's/^.*github/github/')
 
 # TARGET: name of the user application
-TARGET = IdlingStopCanceller-$(GIT_VERSION)
+TARGET = EngineAutoStopEliminator-$(GIT_VERSION)
 
 # BUILD_DIR: directory to place output files in
 BUILD_DIR = build
