@@ -114,57 +114,58 @@ int main(void)
 
                             CcuStatus = READY;
                             break;
-                        }
-
-                        // Increment counter
-                        if ((rx_msg_data[1] & 0x0f) == 0x0f) {
-                            tx_msg_data[1] = rx_msg_data[1] & 0xf0;
                         } else {
-                            tx_msg_data[1] = rx_msg_data[1] + 0x01;
+
+                            // Increment counter
+                            if ((rx_msg_data[1] & 0x0f) == 0x0f) {
+                                tx_msg_data[1] = rx_msg_data[1] & 0xf0;
+                            } else {
+                                tx_msg_data[1] = rx_msg_data[1] + 0x01;
+                            }
+                            tx_msg_data[2] = rx_msg_data[2];
+                            tx_msg_data[3] = rx_msg_data[3];
+                            tx_msg_data[4] = rx_msg_data[4];
+                            tx_msg_data[5] = rx_msg_data[5];
+                            tx_msg_data[6] = rx_msg_data[6] | 0x40; // Eliminate engine auto stop bit on
+                            tx_msg_data[7] = rx_msg_data[7];
+                            // Calculate checksum
+                            tx_msg_data[0] = (tx_msg_data[1] + tx_msg_data[2] + tx_msg_data[3] + tx_msg_data[4] + tx_msg_data[5] + tx_msg_data[6] + tx_msg_data[7]) % SUM_CHECK_DIVIDER;
+
+                            HAL_Delay(50); // 50ms delay like real CCU
+                            can_tx(&tx_msg_header, tx_msg_data); // Transmit message
+
+                            for (uint8_t i=0; i < SLCAN_MTU; i++) {
+                                msg_buf[i] = '\0';
+                            }
+
+                            CurrentTime = HAL_GetTick();
+
+                            // Output all transmitted message(s) to CDC port as candump -L
+                            sprintf_(msg_buf, "# (%d.%03d000) can0 %03x#%02x%02x%02x%02x%02x%02x%02x%02x\n",
+                                     CurrentTime / 1000,
+                                     CurrentTime % 1000,                        
+                                     tx_msg_header.StdId,
+                                     tx_msg_data[0],
+                                     tx_msg_data[1],
+                                     tx_msg_data[2],
+                                     tx_msg_data[3],
+                                     tx_msg_data[4],
+                                     tx_msg_data[5],
+                                     tx_msg_data[6],
+                                     tx_msg_data[7]);
+                            CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
+                            CcuStatus = CAN_FRAME_SENDED;
+                        } else { // Unexpected case
+                            for (uint8_t i=0; i < SLCAN_MTU; i++) {
+                                msg_buf[i] = '\0';
+                            }
+
+                            // Output Warning message
+                            sprintf_(msg_buf, "# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
+                            CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
                         }
-                        tx_msg_data[2] = rx_msg_data[2];
-                        tx_msg_data[3] = rx_msg_data[3];
-                        tx_msg_data[4] = rx_msg_data[4];
-                        tx_msg_data[5] = rx_msg_data[5];
-                        tx_msg_data[6] = rx_msg_data[6] | 0x40; // Eliminate engine auto stop bit on
-                        tx_msg_data[7] = rx_msg_data[7];
-                        // Calculate checksum
-                        tx_msg_data[0] = (tx_msg_data[1] + tx_msg_data[2] + tx_msg_data[3] + tx_msg_data[4] + tx_msg_data[5] + tx_msg_data[6] + tx_msg_data[7]) % SUM_CHECK_DIVIDER;
-
-                        HAL_Delay(50); // 50ms delay like real CCU
-                        can_tx(&tx_msg_header, tx_msg_data); // Transmit message
-
-                        for (uint8_t i=0; i < SLCAN_MTU; i++) {
-                            msg_buf[i] = '\0';
-                        }
-
-                        CurrentTime = HAL_GetTick();
-
-                        // Output all transmitted message(s) to CDC port as candump -L
-                        sprintf_(msg_buf, "# (%d.%03d000) can0 %03x#%02x%02x%02x%02x%02x%02x%02x%02x\n",
-                                 CurrentTime / 1000,
-                                 CurrentTime % 1000,                        
-                                 tx_msg_header.StdId,
-                                 tx_msg_data[0],
-                                 tx_msg_data[1],
-                                 tx_msg_data[2],
-                                 tx_msg_data[3],
-                                 tx_msg_data[4],
-                                 tx_msg_data[5],
-                                 tx_msg_data[6],
-                                 tx_msg_data[7]);
-                        CDC_Transmit_FS(msg_buf, strlen(msg_buf));
-
-                        CcuStatus = CAN_FRAME_SENDED;
-                    } else { // Unexpected case
-                        for (uint8_t i=0; i < SLCAN_MTU; i++) {
-                            msg_buf[i] = '\0';
-                        }
-
-                        // Output Warning message
-                        sprintf_(msg_buf, "# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
-                        CDC_Transmit_FS(msg_buf, strlen(msg_buf));
-
                     }
 
                     PreviousCanId = rx_msg_header.StdId;
