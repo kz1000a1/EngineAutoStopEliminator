@@ -1,10 +1,10 @@
 # Licenses
 
-## CANtact Sources
+## Engine Auto Stop Eliminator Sources
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Eric Evenchick
+Copyright (c) 2023 kz1000a1
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
