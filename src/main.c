@@ -14,14 +14,12 @@
 #include "printf.h"
 #include "subaru_levorg_vnx.h"
 
-#define MSG_BUF_SIZE 128
-
 int main(void)
 {
     // Storage for status and received message buffer
     CAN_RxHeaderTypeDef rx_msg_header;
     uint8_t rx_msg_data[8] = {0};
-    uint8_t msg_buf[MSG_BUF_SIZE];
+    uint8_t msg_buf[TX_BUF_SIZE];
 
     // Storage for transmit message buffer
     CAN_TxHeaderTypeDef tx_msg_header;
@@ -61,7 +59,7 @@ int main(void)
                 can_rx(&rx_msg_header, rx_msg_data);
             } while(is_can_msg_pending(CAN_RX_FIFO0));
 
-            for (uint8_t i=0; i < MSG_BUF_SIZE; i++) {
+            for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                 msg_buf[i] = '\0';
             }
 
@@ -104,7 +102,7 @@ int main(void)
                         CcuStatus = READY;
                     } else if (TcuStatus == IDLING_STOP_ON) { // Transmit message for eliminate engine auto stop
                         if (CcuStatus == CAN_FRAME_SENDED) { // Previous eliminate engine auto stop message failed
-                            for (uint8_t i=0; i < MSG_BUF_SIZE; i++) {
+                            for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                                 msg_buf[i] = '\0';
                             }
 
@@ -134,7 +132,7 @@ int main(void)
                             HAL_Delay(50); // 50ms delay like real CCU
                             can_tx(&tx_msg_header, tx_msg_data); // Transmit message
 
-                            for (uint8_t i=0; i < MSG_BUF_SIZE; i++) {
+                            for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                                 msg_buf[i] = '\0';
                             }
 
@@ -158,7 +156,7 @@ int main(void)
                             CcuStatus = CAN_FRAME_SENDED;
                         }
                     } else { // Unexpected case
-                        for (uint8_t i=0; i < MSG_BUF_SIZE; i++) {
+                        for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                             msg_buf[i] = '\0';
                         }
 
@@ -172,7 +170,7 @@ int main(void)
                     break;
 
                 default: // Unexpected can id
-                    for (uint8_t i=0; i < MSG_BUF_SIZE; i++) {
+                    for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                         msg_buf[i] = '\0';
                     }
 
