@@ -1,4 +1,3 @@
-#pragma once
 
 /* Receive Only Two CAN Ids */
 #define CAN_ID_CCU 0x390
@@ -14,4 +13,5 @@ enum cu_status {
   CAN_FRAME_SENDED
 };
 
+// for Calculate Check Sum
 #define SUM_CHECK_DIVIDER 365
