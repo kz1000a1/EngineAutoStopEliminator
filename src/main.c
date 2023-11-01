@@ -156,16 +156,17 @@ int main(void)
                             CDC_Transmit_FS(msg_buf, strlen(msg_buf));
 
                             CcuStatus = CAN_FRAME_SENDED;
-                        } else { // Unexpected case
-                            for (uint8_t i=0; i < SLCAN_MTU; i++) {
-                                msg_buf[i] = '\0';
-                            }
-
-                            // Output Warning message
-                            sprintf_(msg_buf, "# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
-                            CDC_Transmit_FS(msg_buf, strlen(msg_buf));
-
                         }
+                    } else { // Unexpected case
+                        for (uint8_t i=0; i < SLCAN_MTU; i++) {
+                            msg_buf[i] = '\0';
+                        }
+
+                        // Output Warning message
+                        sprintf_(msg_buf, "# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
+                        CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
+
                     }
 
                     PreviousCanId = rx_msg_header.StdId;
@@ -181,7 +182,6 @@ int main(void)
                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
 
                     break;
-
             }
         }
     }
