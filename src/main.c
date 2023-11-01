@@ -166,7 +166,6 @@ int main(void)
                         sprintf_(msg_buf, "# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
                         CDC_Transmit_FS(msg_buf, strlen(msg_buf));
 
-
                     }
 
                     PreviousCanId = rx_msg_header.StdId;
