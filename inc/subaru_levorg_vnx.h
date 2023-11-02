@@ -1,9 +1,11 @@
+#ifndef __SUBARU_LEVORG_VNX_H__
+#define __SUBARU_LEVORG_VNX_H__
 
-/* Receive Only Two CAN Ids */
+// Receive Only Two CAN Ids
 #define CAN_ID_CCU 0x390
 #define CAN_ID_TCU 0x174
 
-/* CCU and TCU STATUS */
+// CCU and TCU STATUS
 enum cu_status {
   ENGINE_STOP,
   NOT_READY,
@@ -15,3 +17,5 @@ enum cu_status {
 
 // for Calculate Check Sum
 #define SUM_CHECK_DIVIDER 365
+
+#endif /* __SUBARU_LEVORG_VNX_H_ */
