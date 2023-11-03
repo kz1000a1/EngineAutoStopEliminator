@@ -55,9 +55,13 @@ int main(void)
         if(is_can_msg_pending(CAN_RX_FIFO0))
         {
             // Discard message(s) that received during HAL_delay()
+#ifndef FUNC_CANDUMP
             do {
+#endif
                 can_rx(&rx_msg_header, rx_msg_data);
+#ifndef FUNC_CANDUMP
             } while(is_can_msg_pending(CAN_RX_FIFO0));
+#endif
 
             for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                 msg_buf[i] = '\0';
