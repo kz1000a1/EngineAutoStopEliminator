@@ -70,7 +70,7 @@ int main(void)
             CurrentTime = HAL_GetTick();
 
             // Output all received message(s) to CDC port as candump -L
-            sprintf_(msg_buf, "(%d.%03d000) can0 %03x#",
+            sprintf_(msg_buf, "(%d.%03d000) can0 %03X#",
                      CurrentTime / 1000,
                      CurrentTime % 1000,
                      rx_msg_header.StdId);
@@ -81,7 +81,7 @@ int main(void)
             }
 
             for (uint8_t i=0; i < rx_msg_header.DLC; i++) {
-                sprintf_(msg_buf,"%02x", rx_msg_data[i]);
+                sprintf_(msg_buf,"%02X", rx_msg_data[i]);
                 CDC_Transmit_FS(msg_buf, strlen(msg_buf));
             }
 
@@ -148,7 +148,7 @@ int main(void)
                             CurrentTime = HAL_GetTick();
 
                             // Output all transmitted message(s) to CDC port as candump -L
-                            sprintf_(msg_buf, "# (%d.%03d000) can0 %03x#%02x%02x%02x%02x%02x%02x%02x%02x\n",
+                            sprintf_(msg_buf, "# (%d.%03d000) can0 %03X#%02X%02X%02X%02X%02X%02X%02X%02X\n",
                                      CurrentTime / 1000,
                                      CurrentTime % 1000,                        
                                      tx_msg_header.StdId,
