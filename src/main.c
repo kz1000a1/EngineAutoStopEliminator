@@ -66,19 +66,24 @@ int main(void)
             CurrentTime = HAL_GetTick();
 
             // Output all received message(s) to CDC port as candump -L
-            sprintf_(msg_buf, "(%d.%03d000) can0 %03x#%02x%02x%02x%02x%02x%02x%02x%02x\n",
+            sprintf_(msg_buf, "(%d.%03d000) can0 %03x#",
                      CurrentTime / 1000,
                      CurrentTime % 1000,
-                     rx_msg_header.StdId,
-                     rx_msg_data[0],
-                     rx_msg_data[1],
-                     rx_msg_data[2],
-                     rx_msg_data[3],
-                     rx_msg_data[4],
-                     rx_msg_data[5],
-                     rx_msg_data[6],
-                     rx_msg_data[7]);
+                     rx_msg_header.StdId);
             CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
+            for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
+                msg_buf[i] = '\0';
+            }
+
+            for (uint8_t i=0; i < rx_msg_header.DLC; i++) {
+                sprintf_(msg_buf,"%02x", rx_msg_data[i]);
+                CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+            }
+
+            CDC_Transmit_FS("\n", 1);
+
+#ifndef FUNC_CANDUMP
 
             switch (rx_msg_header.StdId) {
                 case CAN_ID_TCU:
@@ -169,6 +174,7 @@ int main(void)
                     PreviousCanId = rx_msg_header.StdId;
                     break;
 
+#ifndef NO_ID_FILTER
                 default: // Unexpected can id
                     for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                         msg_buf[i] = '\0';
@@ -179,7 +185,12 @@ int main(void)
                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
 
                     break;
+#endif
+
             }
+
+#endif
+
         }
     }
 }

@@ -40,7 +40,11 @@ void can_init(void)
     // Initialize default CAN filter configuration
     filter.FilterIdHigh = CAN_ID_CCU << 5;
     filter.FilterIdLow = CAN_ID_TCU << 5;
+#ifdef NO_ID_FILTER
+    filter.FilterMaskIdHigh = 0x8;
+#else
     filter.FilterMaskIdHigh = (0x7FF << 5) | 0x8;
+#endif
     filter.FilterMaskIdLow = (0x7FF << 5) | 0x8;
     filter.FilterFIFOAssignment = CAN_RX_FIFO0;
     filter.FilterBank = 0;
