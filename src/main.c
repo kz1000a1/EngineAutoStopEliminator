@@ -48,20 +48,15 @@ int main(void)
             
     while(1)
     {
+#ifndef FUNC_CANDUMP
         led_process();
         can_process();
+#endif
 
         // If CAN message receive is pending, process the message
         if(is_can_msg_pending(CAN_RX_FIFO0))
         {
-            // Discard message(s) that received during HAL_delay()
-#ifndef FUNC_CANDUMP
-            do {
-#endif
-                can_rx(&rx_msg_header, rx_msg_data);
-#ifndef FUNC_CANDUMP
-            } while(is_can_msg_pending(CAN_RX_FIFO0));
-#endif
+            can_rx(&rx_msg_header, rx_msg_data);
 
             for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
                 msg_buf[i] = '\0';
@@ -82,7 +77,7 @@ int main(void)
 
             for (uint8_t i=0; i < rx_msg_header.DLC; i++) {
                 sprintf_(msg_buf,"%02X", rx_msg_data[i]);
-                CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+                CDC_Transmit_FS(msg_buf, 2);
             }
 
             CDC_Transmit_FS("\n", 1);
@@ -161,6 +156,11 @@ int main(void)
                                      tx_msg_data[6],
                                      tx_msg_data[7]);
                             CDC_Transmit_FS(msg_buf, strlen(msg_buf));
+
+                            // Discard message(s) that received during HAL_delay()
+                            do {
+                                can_rx(&rx_msg_header, rx_msg_data);
+                            } while(is_can_msg_pending(CAN_RX_FIFO0));
 
                             CcuStatus = CAN_FRAME_SENDED;
                         }

@@ -1,8 +1,7 @@
 #ifndef __SUBARU_LEVORG_VNX_H__
 #define __SUBARU_LEVORG_VNX_H__
 
-/* #define NO_ID_FILTER */
-#define FUNC_CANDUMP
+/* #define FUNC_CANDUMP */
 
 #ifdef FUNC_CANDUMP
     #define NO_ID_FILTER
