@@ -9,6 +9,15 @@ Same applies to incorrect connections and alternations to the CAN bus wiring. Th
 
 By using any code in this project you assume any and all risk, and release any liability from the author.
 
+## Supported Commands
+
+- `M0` - Set mode to Engine Auto Stop Eliminator mode (default)
+- `M1` - Set mode to Engine Auto Stop Eliminator with Debug Message output to USB CDC port mode
+- `M2` - Disable Engine Auto Stop Eliminator function and Can Dump output to USB CDC port mode
+- `V` - Returns firmware version and remote path as a string
+
+This firmware currently does not provide any ACK/NACK feedback for serial commands.
+
 ## Building
 
 Firmware builds with GCC. Specifically, you will need gcc-arm-none-eabi, which

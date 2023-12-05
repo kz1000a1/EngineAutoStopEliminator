@@ -40,11 +40,14 @@ void can_init(void)
     // Initialize default CAN filter configuration
     filter.FilterIdHigh = CAN_ID_CCU << 5;
     filter.FilterIdLow = CAN_ID_TCU << 5;
-#ifdef NO_ID_FILTER
-    filter.FilterMaskIdHigh = 0x8;
-#else
-    filter.FilterMaskIdHigh = (0x7FF << 5) | 0x8;
-#endif
+
+    if(DebugMode == CANDUMP)
+    {
+        filter.FilterMaskIdHigh = 0x8;
+    } else {
+        filter.FilterMaskIdHigh = (0x7FF << 5) | 0x8;
+    }
+
     filter.FilterMaskIdLow = (0x7FF << 5) | 0x8;
     filter.FilterFIFOAssignment = CAN_RX_FIFO0;
     filter.FilterBank = 0;
@@ -104,6 +107,24 @@ void can_disable(void)
 
         led_green_on();
     }
+}
+
+
+// Enable the CAN filter
+void can_filter_enable(void)
+{
+	can_disable();
+        filter.FilterMaskIdHigh = (0x7FF << 5) | 0x8;
+	can_enable();
+}
+
+
+// Disble the CAN filter
+void can_filter_disable(void)
+{
+	can_disable();
+        filter.FilterMaskIdHigh = 0x8;
+	can_enable();
 }
 
 

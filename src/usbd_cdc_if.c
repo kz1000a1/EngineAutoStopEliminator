@@ -3,6 +3,7 @@
 //
 
 #include "usbd_cdc_if.h"
+#include "eliminator.h"
 #include "led.h"
 #include "system.h"
 #include "error.h"
@@ -11,6 +12,8 @@
 static volatile usbrx_buf_t rxbuf = {0};
 static uint8_t txbuf[TX_BUF_SIZE];
 extern USBD_HandleTypeDef hUsbDeviceFS;
+static uint8_t eliminator_str[ELIMINATOR_MTU];
+static uint8_t eliminator_str_index = 0;
 
 
 // Private function prototypes
@@ -159,6 +162,48 @@ static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 	    return (USBD_OK);
 	}
 
+}
+
+
+// Process incoming USB-CDC messages from RX FIFO
+void cdc_process(void)
+{
+	system_irq_disable();
+	if(rxbuf.tail != rxbuf.head)
+	{
+		//  Process one whole buffer
+		for (uint32_t i = 0; i < rxbuf.msglen[rxbuf.tail]; i++)
+		{
+		   if (rxbuf.buf[rxbuf.tail][i] == '\r')
+		   {
+			   int8_t result = eliminator_parse_str(eliminator_str, eliminator_str_index);
+
+			   // Success
+			   //if(result == 0)
+			   //    CDC_Transmit_FS("\n", 1);
+			   // Failure
+			   //else
+			   //    CDC_Transmit_FS("\a", 1);
+
+			   eliminator_str_index = 0;
+		   }
+		   else
+		   {
+			   // Check for overflow of buffer
+			   if(eliminator_str_index >= ELIMINATOR_MTU)
+			   {
+				   // TODO: Return here and discard this CDC buffer?
+				   eliminator_str_index = 0;
+			   }
+
+			   eliminator_str[eliminator_str_index++] = rxbuf.buf[rxbuf.tail][i];
+		   }
+		}
+
+		// Move on to next buffer
+		rxbuf.tail = (rxbuf.tail + 1) % NUM_RX_BUFS;
+	}
+	system_irq_enable();
 }
 
 

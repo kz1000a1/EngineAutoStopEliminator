@@ -39,6 +39,8 @@ typedef struct cantxbuf_
 void can_init(void);
 void can_enable(void);
 void can_disable(void);
+void can_filter_enable(void);
+void can_filter_disable(void);
 void can_set_bitrate(enum can_bitrate bitrate);
 void can_set_silent(uint8_t silent);
 void can_set_autoretransmit(uint8_t autoretransmit);

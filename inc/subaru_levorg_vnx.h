@@ -1,12 +1,6 @@
 #ifndef __SUBARU_LEVORG_VNX_H__
 #define __SUBARU_LEVORG_VNX_H__
 
-/* #define FUNC_CANDUMP */
-
-#ifdef FUNC_CANDUMP
-    #define NO_ID_FILTER
-#endif
-
 // Receive Only Two CAN Ids
 #define CAN_ID_CCU 0x390
 #define CAN_ID_TCU 0x174
@@ -20,6 +14,15 @@ enum cu_status {
     IDLING_STOP_OFF,
     CAN_FRAME_SENDED
 };
+
+// MODE
+enum debug_mode {
+    NORMAL,
+    DEBUG,
+    CANDUMP
+};
+
+extern enum debug_mode DebugMode;
 
 // for Calculate Check Sum
 #define SUM_CHECK_DIVIDER 365
