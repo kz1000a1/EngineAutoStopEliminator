@@ -11,6 +11,10 @@ By using any code in this project you assume any and all risk, and release any l
 
 ## Supported Commands
 
+These command are only accepted in debug mode.
+Define DEBUG_MODE in subaru_levorg_vnx.h and enable debug mode.
+If you do not connect the USB CDC port to the host computer (SmartPhone's OTG port,Personal Computer ...), the debug mode will not work properly.
+
 - `M0` - Set mode to Engine Auto Stop Eliminator mode (default)
 - `M1` - Set mode to Engine Auto Stop Eliminator with Debug Message output to USB CDC port mode
 - `M2` - Disable Engine Auto Stop Eliminator function and Can Dump output to USB CDC port mode
