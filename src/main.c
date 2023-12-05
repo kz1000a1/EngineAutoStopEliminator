@@ -50,7 +50,9 @@ int main(void)
             
     while(1)
     {
+#ifdef DEBUG_MODE
 	cdc_process();
+#endif
         led_process();
         can_process();
 

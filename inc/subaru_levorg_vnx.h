@@ -1,6 +1,8 @@
 #ifndef __SUBARU_LEVORG_VNX_H__
 #define __SUBARU_LEVORG_VNX_H__
 
+#undef DEBUG_MODE
+
 // Receive Only Two CAN Ids
 #define CAN_ID_CCU 0x390
 #define CAN_ID_TCU 0x174
