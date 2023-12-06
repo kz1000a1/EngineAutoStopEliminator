@@ -16,8 +16,8 @@ Define DEBUG_MODE in subaru_levorg_vnx.h and enable debug mode.
 If you do not connect the USB CDC port to the host computer (SmartPhone's OTG port,Personal Computer ...), the debug mode will not work properly.
 
 - `M0` - Set mode to Engine Auto Stop Eliminator mode (default)
-- `M1` - Set mode to Engine Auto Stop Eliminator with Debug Message output to USB CDC port mode
-- `M2` - Disable Engine Auto Stop Eliminator function and Can Dump output to USB CDC port mode
+- `M1` - Set mode to Engine Auto Stop Eliminator with Debug Message output to USB CDC port
+- `M2` - Disable Engine Auto Stop Eliminator function and dump can bus traffic with candump log formatted output to USB CDC port
 - `V` - Returns firmware version and remote path as a string
 
 This firmware currently does not provide any ACK/NACK feedback for serial commands.
