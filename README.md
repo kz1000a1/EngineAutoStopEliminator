@@ -11,8 +11,8 @@ By using any code in this project you assume any and all risk, and release any l
 
 ## Supported Commands
 
-These command are only accepted in debug mode.
-Define DEBUG_MODE in subaru_levorg_vnx.h and enable debug mode.
+These commands are only accepted in debug mode.
+For enable debug mode, you can compile using `make BUILD_MODE=1`.
 If you do not connect the USB CDC port to the host computer (SmartPhone's OTG port,Personal Computer ...), the debug mode will not work properly.
 
 - `M0` - Set mode to Engine Auto Stop Eliminator mode (default)
@@ -32,7 +32,7 @@ system and add the `bin` folder to your PATH.
 Your Linux distribution may also have a prebuilt package for `arm-none-eabi-gcc`, check your distro's repositories to see if a build exists.
 
 - If you have a CANable device, you can compile using `make`. 
-- If you have a CANtact or other device with external oscillator, you can compile using `make INTERNAL_OSCILLATOR=1`
+- If you have a CANtact or other device with external oscillator, you can compile using `make EXTERNAL_OSCILLATOR=1`.
 
 ## Flashing with the Bootloader
 

@@ -42,6 +42,10 @@ ifneq ($(EXTERNAL_OSCILLATOR), 1)
 USER_CFLAGS += -DINTERNAL_OSCILLATOR
 endif
 
+ifeq ($(DEBUG_MODE), 1)
+USER_CFLAGS += -DDEBUG_MODE
+endif
+
 # USER_LDFLAGS:  user LD flags
 USER_LDFLAGS = -fno-exceptions -ffunction-sections -fdata-sections -Wl,--gc-sections
 
