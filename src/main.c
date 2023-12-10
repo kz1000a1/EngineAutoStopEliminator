@@ -106,7 +106,7 @@ int main(void)
                         if (PreviousCanId == CAN_ID_CCU) { // TCU don't transmit message
                             CcuStatus = ENGINE_STOP;
                             TcuStatus = ENGINE_STOP;
-                        } else if (rx_msg_data[6] != 0x81) {
+                        } else if (rx_msg_data[6] & 0x02) {
                             CcuStatus = NOT_READY;
                         } else if (CcuStatus == NOT_READY || TcuStatus == IDLING_STOP_OFF) {
                             CcuStatus = READY;
