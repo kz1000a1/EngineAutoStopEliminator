@@ -92,7 +92,7 @@ int main(void)
             {
                 switch (rx_msg_header.StdId) {
                     case CAN_ID_TCU:
-                        if (rx_msg_data[2] != 0x08) {
+                        if ((rx_msg_data[2] & 0x08) != 0x08) {
                             TcuStatus = NOT_READY;
                         } else if (rx_msg_data[4] == 0xc0) {
                             TcuStatus = IDLING_STOP_OFF;
