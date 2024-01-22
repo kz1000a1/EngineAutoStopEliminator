@@ -5,7 +5,6 @@
 #include "stm32f0xx_hal.h"
 #include "usbd_cdc_if.h"
 #include "can.h"
-#include "led.h"
 #include "error.h"
 #include "subaru_levorg_vnx.h"
 
@@ -91,7 +90,6 @@ void can_enable(void)
         HAL_CAN_Start(&can_handle);
         bus_state = ON_BUS;
 
-        led_blue_on();
     }
 }
 
@@ -105,7 +103,6 @@ void can_disable(void)
     	can_handle.Instance->MCR |= CAN_MCR_RESET;
         bus_state = OFF_BUS;
 
-        led_green_on();
     }
 }
 
@@ -172,7 +169,6 @@ void can_set_bitrate(enum can_bitrate bitrate)
             break;
     }
 
-    led_green_on();
 }
 
 
@@ -191,7 +187,6 @@ void can_set_silent(uint8_t silent)
     	can_handle.Init.Mode = CAN_MODE_NORMAL;
     }
 
-    led_green_on();
 }
 
 
@@ -210,7 +205,6 @@ void can_set_autoretransmit(uint8_t autoretransmit)
     	can_autoretransmit = DISABLE;
     }
 
-    led_green_on();
 }
 
 
@@ -250,8 +244,6 @@ void can_process(void)
 		uint32_t status = HAL_CAN_AddTxMessage(&can_handle, &txqueue.header[txqueue.tail], txqueue.data[txqueue.tail], &mailbox_txed);
 		txqueue.tail = (txqueue.tail + 1) % TXQUEUE_LEN;
 
-		led_green_on();
-
 		// This drops the packet if it fails (no retry). Failure is unlikely
 		// since we check if there is a TX mailbox free.
 		if(status != HAL_OK)
@@ -266,7 +258,7 @@ void can_process(void)
 uint32_t can_rx(CAN_RxHeaderTypeDef *rx_msg_header, uint8_t* rx_msg_data)
 {
     uint32_t status = HAL_CAN_GetRxMessage(&can_handle, CAN_RX_FIFO0, rx_msg_header, rx_msg_data);
-	led_blue_on();
+
     return status;
 }
 

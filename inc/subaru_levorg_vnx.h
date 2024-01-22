@@ -17,6 +17,14 @@ enum cu_status {
     CAN_FRAME_SENDED
 };
 
+// RESULT
+enum result {
+    PROCESSING,
+    CANCELLED,
+    FAILED,
+    SUCCEEDED
+};
+
 // MODE
 enum debug_mode {
     NORMAL,
