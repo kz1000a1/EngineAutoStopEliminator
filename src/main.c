@@ -120,6 +120,7 @@ int main(void)
                                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                                 }
                                 Result = PROCESSING;
+                                CcuStatus = NOT_READY;
                             }
 
                         }
