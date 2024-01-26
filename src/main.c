@@ -41,7 +41,9 @@ int main(void)
     // Initialize peripherals
     system_init();
     can_init();
+#ifdef DEBUG_MODE
     usb_init();
+#endif
 
     can_enable();
             
