@@ -35,8 +35,9 @@ int main(void)
 
     static enum cu_status TcuStatus = ENGINE_STOP;
     static enum cu_status CcuStatus = ENGINE_STOP;
-    static enum result Result = PROCESSING;
+    static enum status Status = PROCESSING;
     static uint16_t PreviousCanId = CAN_ID_CCU;
+    static uint8_t Retry = 0;
 
     // Initialize peripherals
     system_init();
@@ -93,7 +94,7 @@ int main(void)
                             TcuStatus = NOT_READY;
                         } else if (rx_msg_data[4] == 0xc0) {
                             TcuStatus = IDLING_STOP_OFF;
-                            if (CcuStatus == CAN_FRAME_SENDED && Result == PROCESSING) {
+                            if (Retry != 0 && Status == PROCESSING && PreviousCanId == CAN_ID_TCU) {
 	                        if(DebugMode == DEBUG)
                                 {
                                     for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
@@ -104,11 +105,11 @@ int main(void)
                                     sprintf_(msg_buf, "# Warning: Eliminate engine auto stop succeeded.\n");
                                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                                 }
-                                Result = SUCCEEDED;
+                                Status = SUCCEEDED;
                             }
                         } else {
                             TcuStatus = IDLING_STOP_ON;
-                            if (Result == SUCCEEDED) {
+                            if (Status == SUCCEEDED) {
 	                        if(DebugMode == DEBUG)
                                 {
                                     for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
@@ -119,8 +120,9 @@ int main(void)
                                     sprintf_(msg_buf, "# Warning: Eliminate engine auto stop restarted.\n");
                                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                                 }
-                                Result = PROCESSING;
+                                Status = PROCESSING;
                                 CcuStatus = NOT_READY;
+                                Retry = 0;
                             }
 
                         }
@@ -131,7 +133,8 @@ int main(void)
                         if (PreviousCanId == CAN_ID_CCU) { // TCU don't transmit message
                             CcuStatus = ENGINE_STOP;
                             TcuStatus = ENGINE_STOP;
-                            Result = PROCESSING;
+                            Status = PROCESSING;
+                            Retry = 0;
                         } else if (rx_msg_data[6] & 0x40) {
 	                    if(DebugMode == DEBUG)
                             {
@@ -143,15 +146,15 @@ int main(void)
                                 sprintf_(msg_buf, "# Warning: Eliminate engine auto stop cancelled.\n");
                                 CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                             }
-                            Result = CANCELLED;
+                            Status = CANCELLED;
 
-                        } else if (Result == PROCESSING) {
+                        } else if (Status == PROCESSING) {
                             if (rx_msg_data[6] & 0x02) {
                                     CcuStatus = NOT_READY;
                             } else if (CcuStatus == NOT_READY || CcuStatus == ENGINE_STOP || TcuStatus == IDLING_STOP_OFF) {
                                 CcuStatus = READY;
                             } else if (TcuStatus == IDLING_STOP_ON) { // Transmit message for eliminate engine auto stop
-                                if (CcuStatus == CAN_FRAME_SENDED) { // Previous eliminate engine auto stop message failed
+                                if (MAX_RETRY <= Retry) { // Previous eliminate engine auto stop message failed
 	                            if(DebugMode == DEBUG)
                                     {
                                         for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
@@ -163,7 +166,7 @@ int main(void)
                                         CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                                     }
 
-                                    Result = FAILED;
+                                    Status = FAILED;
 
                                 } else {
 
@@ -215,7 +218,7 @@ int main(void)
                                         can_rx(&rx_msg_header, rx_msg_data);
                                     } while(is_can_msg_pending(CAN_RX_FIFO0));
 
-                                    CcuStatus = CAN_FRAME_SENDED;
+                                    Retry++;
                                 }
                             } else { // Unexpected case
                                 if(DebugMode == DEBUG)

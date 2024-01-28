@@ -13,12 +13,11 @@ enum cu_status {
     NOT_READY,
     READY,
     IDLING_STOP_ON,
-    IDLING_STOP_OFF,
-    CAN_FRAME_SENDED
+    IDLING_STOP_OFF
 };
 
-// RESULT
-enum result {
+// STATUS
+enum status {
     PROCESSING,
     CANCELLED,
     FAILED,
@@ -36,5 +35,8 @@ extern enum debug_mode DebugMode;
 
 // for Calculate Check Sum
 #define SUM_CHECK_DIVIDER 365
+
+
+#define MAX_RETRY 2
 
 #endif /* __SUBARU_LEVORG_VNX_H_ */
