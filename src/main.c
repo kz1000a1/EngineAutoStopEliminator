@@ -94,7 +94,7 @@ int main(void)
                             TcuStatus = NOT_READY;
                         } else if (rx_msg_data[4] == 0xc0) {
                             TcuStatus = IDLING_STOP_OFF;
-                            if (Retry != 0 && Status == PROCESSING && PreviousCanId == CAN_ID_TCU) {
+                            if (Retry != 0 && Status == PROCESSING) {
 	                        if(DebugMode == DEBUG)
                                 {
                                     for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
