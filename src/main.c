@@ -16,6 +16,21 @@
 
 enum debug_mode DebugMode = NORMAL;
 
+
+void eld_blink(enum status Status){
+    if(Status & 1){
+        led_orange_on();
+    } else {
+        led_orange_off();
+    }
+    if(Status & 2){
+        led_green_on();
+    } else {
+        led_green_off();
+    }
+}
+
+
 int main(void)
 {
     // Storage for status and received message buffer
@@ -108,6 +123,7 @@ int main(void)
                                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                                 }
                                 Status = SUCCEEDED;
+                                led_blink(Status);
                             }
                         } else {
                             TcuStatus = IDLING_STOP_ON;
@@ -123,6 +139,7 @@ int main(void)
                                     CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                                 }
                                 Status = PROCESSING;
+                                led_blink(Status);
                                 CcuStatus = NOT_READY;
                                 Retry = 0;
                             }
@@ -136,6 +153,7 @@ int main(void)
                             CcuStatus = ENGINE_STOP;
                             TcuStatus = ENGINE_STOP;
                             Status = PROCESSING;
+                            led_blink(Status);
                             Retry = 0;
                         } else if (rx_msg_data[6] & 0x40) {
 	                    if(DebugMode == DEBUG)
@@ -149,6 +167,7 @@ int main(void)
                                 CDC_Transmit_FS(msg_buf, strlen(msg_buf));
                             }
                             Status = CANCELLED;
+                            led_blink(Status);
 
                         } else if (Status == PROCESSING) {
                             if (rx_msg_data[6] & 0x02) {
@@ -169,6 +188,7 @@ int main(void)
                                     }
 
                                     Status = FAILED;
+                                    led_blink(Status);
 
                                 } else {
 
