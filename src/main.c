@@ -8,6 +8,7 @@
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
 #include "can.h"
+#include "led.h"
 #include "system.h"
 #include "error.h"
 #include "printf.h"
@@ -42,6 +43,7 @@ int main(void)
     // Initialize peripherals
     system_init();
     can_init();
+    led_init();
 #ifdef DEBUG_MODE
     usb_init();
 #endif
