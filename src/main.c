@@ -14,10 +14,10 @@
 #include "printf.h"
 #include "subaru_levorg_vnx.h"
 
-enum debug_mode DebugMode = NORMAL;
+enum debug_mode DebugMode = DEBUG;
 
 
-void eld_blink(enum status Status){
+void led_blink(enum status Status){
     if(Status & 1){
         led_orange_on();
     } else {
