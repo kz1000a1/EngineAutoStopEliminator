@@ -15,8 +15,8 @@ These commands are only accepted in debug mode.
 For enable debug mode, you can compile using `make -B DEBUG_MODE=1`.
 If you do not connect the USB CDC port to the host computer (SmartPhone's OTG port,Personal Computer ...), the debug mode will not work properly.
 
-- `M0` - Set mode to Engine Auto Stop Eliminator mode (default)
-- `M1` - Set mode to Engine Auto Stop Eliminator with Debug Message output to USB CDC port
+- `M0` - Set mode to Engine Auto Stop Eliminator mode
+- `M1` - Set mode to Engine Auto Stop Eliminator with Debug Message output to USB CDC port (default)
 - `M2` - Disable Engine Auto Stop Eliminator function and dump can bus traffic with candump log formatted output to USB CDC port
 - `V` - Returns firmware version and remote path as a string
 

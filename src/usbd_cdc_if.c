@@ -4,7 +4,6 @@
 
 #include "usbd_cdc_if.h"
 #include "eliminator.h"
-#include "led.h"
 #include "system.h"
 #include "error.h"
 
