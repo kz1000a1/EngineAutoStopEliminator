@@ -6,7 +6,6 @@
 #include "led.h"
 
 
-
 // Initialize LED GPIOs
 void led_init()
 {
@@ -14,7 +13,8 @@ void led_init()
     GPIO_InitTypeDef GPIO_InitStruct;
     
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    
+
+    led_green_off();     
     GPIO_InitStruct.Pin = LED_GREEN_Pin;
     GPIO_InitStruct.Mode = LED_GREEN_Mode;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -22,6 +22,7 @@ void led_init()
     GPIO_InitStruct.Alternate = 0;
     HAL_GPIO_Init(LED_GREEN_Port, &GPIO_InitStruct);
 
+    led_orange_off(); 
     GPIO_InitStruct.Pin = LED_ORANGE_Pin;
     GPIO_InitStruct.Mode = LED_ORANGE_Mode;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -29,22 +30,6 @@ void led_init()
     GPIO_InitStruct.Alternate = 0;
     HAL_GPIO_Init(LED_ORANGE_Port, &GPIO_InitStruct);
    
-    led_green_off(); 
-    led_orange_off();  
-}
-
-
-// Turn orange LED on
-void led_orange_on(void)
-{
-	HAL_GPIO_WritePin(LED_ORANGE, LED_ORANGE_Active_High);
-}
-
-
-// Turn orange LED on
-void led_orange_off(void)
-{
-	HAL_GPIO_WritePin(LED_ORANGE, ~ LED_ORANGE_Active_High);
 }
 
 
@@ -55,8 +40,22 @@ void led_green_on(void)
 }
 
 
-// Turn green LED of
+// Turn green LED off
 void led_green_off(void)
 {
 	HAL_GPIO_WritePin(LED_GREEN, ~ LED_GREEN_Active_High);
 }
+
+// Turn orange LED on
+void led_orange_on(void)
+{
+	HAL_GPIO_WritePin(LED_ORANGE, LED_ORANGE_Active_High);
+}
+
+
+// Turn orange LED off
+void led_orange_off(void)
+{
+	HAL_GPIO_WritePin(LED_ORANGE, ~ LED_ORANGE_Active_High);
+}
+

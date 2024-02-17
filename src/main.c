@@ -14,8 +14,11 @@
 #include "printf.h"
 #include "subaru_levorg_vnx.h"
 
-enum debug_mode DebugMode = DEBUG;
-
+#ifdef DEBUG_MODE
+    enum debug_mode DebugMode = DEBUG;
+#else
+    enum debug_mode DebugMode = NORMAL;
+#endif
 
 void led_blink(enum status Status){
     if(Status & 1){
