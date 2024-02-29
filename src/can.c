@@ -14,7 +14,7 @@ static CAN_HandleTypeDef can_handle;
 static CAN_FilterTypeDef filter;
 static uint32_t prescaler;
 static can_bus_state_t bus_state = OFF_BUS;
-static uint8_t can_autoretransmit = ENABLE;
+static uint8_t can_autoretransmit = DISABLE;
 static can_txbuf_t txqueue = {0};
 
 
@@ -56,7 +56,8 @@ void can_init(void)
 
 
     // default to 500 kbit/s
-    prescaler = 12;
+    can_set_bitrate(CAN_BITRATE_500K);
+    // prescaler = 12;
     can_handle.Instance = CAN;
     bus_state = OFF_BUS;
 
