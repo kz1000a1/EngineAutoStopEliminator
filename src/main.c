@@ -65,7 +65,7 @@ void print_tx_frame(CAN_TxHeaderTypeDef* tx_msg_header, uint8_t* tx_msg_data){
 }
 
 
-}void send_cancel_frame(uint8_t* rx_msg_data){
+void send_cancel_frame(uint8_t* rx_msg_data){
     // Storage for transmit message buffer
     CAN_TxHeaderTypeDef tx_msg_header;
     tx_msg_header.IDE = CAN_ID_STD;
