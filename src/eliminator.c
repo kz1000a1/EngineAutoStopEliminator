@@ -43,7 +43,7 @@ int8_t eliminator_parse_str(uint8_t *buf, uint8_t len)
 						can_filter_enable();
 					}
 					DebugMode = NORMAL;
-					CDC_Transmit_FS("NORMAL MODE\n", 12);
+					printf_("NORMAL MODE\n");
 					break;
 				
 				case 1:
@@ -53,7 +53,7 @@ int8_t eliminator_parse_str(uint8_t *buf, uint8_t len)
 						can_filter_enable();
 					}
 					DebugMode = DEBUG;
-					CDC_Transmit_FS("DEBUG MODE\n", 11);
+					printf_("DEBUG MODE\n");
 					break;
 				
 				case 2:
@@ -63,7 +63,7 @@ int8_t eliminator_parse_str(uint8_t *buf, uint8_t len)
 						can_filter_disable();
 					}
 					DebugMode = CANDUMP;
-					CDC_Transmit_FS("CANDUMP MODE\n", 13);
+					printf_("CANDUMP MODE\n");
 					break;
 			}
 			
@@ -73,8 +73,7 @@ int8_t eliminator_parse_str(uint8_t *buf, uint8_t len)
 		case 'V':
 		{
 			// Report firmware version and remote
-			char* fw_id = GIT_VERSION " " GIT_REMOTE "\n";
-			CDC_Transmit_FS((uint8_t*)fw_id, strlen(fw_id));
+			printf_(GIT_VERSION " " GIT_REMOTE "\n");
 			break;
 		}
 
