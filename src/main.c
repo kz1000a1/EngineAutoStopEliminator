@@ -50,20 +50,19 @@ void print_tx_frame(CAN_TxHeaderTypeDef* tx_msg_header, uint8_t* tx_msg_data){
     CurrentTime = HAL_GetTick();
 
     // Output all received message(s) to CDC port as candump -L
-    if(tx_msg_header->RTR == CAN_RTR_DATA){ // Data Frame
-        printf_("(%d.%03d000) can0 %03X#", CurrentTime / 1000,
-                                           CurrentTime % 1000,
-                                           tx_msg_header->StdId);
-        for (uint8_t i=0; i < tx_msg_header->DLC; i++) {
-            printf_("%02X", tx_msg_data[i]);
-        }
-        printf_("\n");
-    } else { // Remote Frame
-        printf_("(%d.%03d000) can0 %03X#R%d\n", CurrentTime / 1000,
-                                                CurrentTime % 1000,
-                                                tx_msg_header->StdId,
-                                                tx_msg_header->DLC);
-    }
+    printf_("(%d.%03d000) can0 %03X#%02X%02X%02X%02X%02X%02X%02X%02X\n",
+                                CurrentTime / 1000,
+                                CurrentTime % 1000,
+                                tx_msg_header->StdId,
+                                tx_msg_data[0],
+                                tx_msg_data[1],
+                                tx_msg_data[2],
+                                tx_msg_data[3],
+                                tx_msg_data[4],
+                                tx_msg_data[5],
+                                tx_msg_data[6],
+                                tx_msg_data[7]);
+}
 
 
 }void send_cancel_frame(uint8_t* rx_msg_data){
