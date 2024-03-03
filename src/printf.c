@@ -34,6 +34,7 @@
 #include <stdint.h>
 
 #include "printf.h"
+#include "usbd_cdc_if.h"
 
 
 // define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
@@ -859,6 +860,7 @@ static int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/*
 int printf_(const char* format, ...)
 {
   va_list va;
@@ -866,6 +868,19 @@ int printf_(const char* format, ...)
   char buffer[1];
   const int ret = _vsnprintf(_out_char, buffer, (size_t)-1, format, va);
   va_end(va);
+  return ret;
+}
+*/
+
+
+int printf_(const char* format, ...)
+{
+  char buffer[64];
+  va_list va;
+  va_start(va, format);
+  const int ret = _vsnprintf(_out_buffer, buffer, (size_t)-1, format, va);
+  va_end(va);
+  CDC_Transmit_FS(buffer, ret);
   return ret;
 }
 

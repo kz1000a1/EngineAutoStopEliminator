@@ -21,37 +21,39 @@
 #endif
 
 
-
-uint8_t serial_printf(const char* format, ...){
-    uint8_t msg_buf[TX_BUF_SIZE];
+/*
+uint8_t printf_(const char* format, ...){
+    char msg_buf[TX_BUF_SIZE];
     uint8_t msg_len;
     va_list va;
 
-/*
-    for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
-        msg_buf[i] = '\0';
-    }
-*/
-/*
+
+    // for (uint8_t i=0; i < TX_BUF_SIZE; i++) {
+    //     msg_buf[i] = '\0';
+    // }
+
+
     va_start(va, format);
     msg_len = _vsnprintf(_out_buffer, msg_buf, TX_BUF_SIZE, format, va);
     va_end(va);
-*/
-    msg_len = sprintf_(msg_buf,format);
+
+    // msg_len = sprintf_(msg_buf,format);
     if(msg_len <= TX_BUF_SIZE){
         CDC_Transmit_FS(msg_buf, msg_len);
     }
     return msg_len;
 }
+*/
 
 
 void print_frame(CAN_RxHeaderTypeDef* rx_msg_header, uint8_t* rx_msg_data){
     uint32_t CurrentTime;
     uint8_t  msg_len;
-    uint8_t msg_buf[TX_BUF_SIZE];
+    char     msg_buf[TX_BUF_SIZE];
 
     CurrentTime = HAL_GetTick();
-    
+
+/*
     // Output all received message(s) to CDC port as candump -L
     if(rx_msg_header->RTR == CAN_RTR_DATA){ // Data Frame
  
@@ -85,36 +87,35 @@ void print_frame(CAN_RxHeaderTypeDef* rx_msg_header, uint8_t* rx_msg_data){
         if(msg_len <= TX_BUF_SIZE){
             CDC_Transmit_FS(msg_buf, msg_len);
         }
-
     }
 
 
-/*
+*/
+
     // Output all received message(s) to CDC port as candump -L
     if(rx_msg_header->RTR == CAN_RTR_DATA){ // Data Frame
  
-        msg_len = serial_printf("(%d.%03d000) can0 %03X#", CurrentTime / 1000,
+        msg_len = printf_("(%d.%03d000) can0 %03X#", CurrentTime / 1000,
                                                  CurrentTime % 1000,
                                                  rx_msg_header->StdId);
-        serial_printf("msg_len = %d\n", msg_len);
+        // printf_("msg_len = %d\n", msg_len);
 
         for (uint8_t i=0; i < rx_msg_header->DLC; i++) {
-            msg_len = serial_printf("%02X", rx_msg_data[i]);
-            serial_printf("msg_len = %d\n", msg_len);
+            msg_len = printf_("%02X", rx_msg_data[i]);
+            // printf_("msg_len = %d\n", msg_len);
         }
 
-        msg_len = serial_printf("\n");
-        serial_printf("msg_len = %d\n", msg_len);
+        msg_len = printf_("\n");
+        // printf_("msg_len = %d\n", msg_len);
 
     } else { // Remote Frame
 	
-        msg_len = serial_printf("(%d.%03d000) can0 %03X#R%d\n", CurrentTime / 1000,
+        msg_len = printf_("(%d.%03d000) can0 %03X#R%d\n", CurrentTime / 1000,
                                                       CurrentTime % 1000,
                                                       rx_msg_header->StdId,
                                                       rx_msg_header->DLC);
-        serial_printf("msg_len = %d\n", msg_len);
+        // printf_("msg_len = %d\n", msg_len);
     }
-*/
 }
 
 void send_cancel_frame(uint8_t* rx_msg_data){
@@ -145,7 +146,7 @@ void send_cancel_frame(uint8_t* rx_msg_data){
     can_process(); // Transmit message
     
     if(DebugMode != NORMAL){
-        serial_printf("# ");
+        printf_("# ");
         print_frame(&tx_msg_header, tx_msg_data);
     }
 }
@@ -199,9 +200,8 @@ int main(void)
 
             if(DebugMode != NORMAL){
                 print_frame(&rx_msg_header, rx_msg_data);
-                serial_printf("# TEST: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
             }
-            
+
             if(rx_msg_header.RTR != CAN_RTR_DATA || rx_msg_header.DLC != 8){
                 continue;
             }
@@ -218,7 +218,7 @@ int main(void)
 	                        if(DebugMode == DEBUG)
                                 {
                                     // Output Warning message
-                                    serial_printf("# Warning: Eliminate engine auto stop succeeded.\n");
+                                    printf_("# Warning: Eliminate engine auto stop succeeded.\n");
                                 }
                                 Status = SUCCEEDED;
                                 led_blink(Status);
@@ -229,7 +229,7 @@ int main(void)
 	                        if(DebugMode == DEBUG)
                                 {
                                     // Output Warning message
-                                    serial_printf("# Warning: Eliminate engine auto stop restarted.\n");
+                                    printf_("# Warning: Eliminate engine auto stop restarted.\n");
                                 }
                                 Status = PROCESSING;
                                 led_blink(Status);
@@ -252,7 +252,7 @@ int main(void)
 	                    if(DebugMode == DEBUG)
                             {
                                 // Output Warning message
-                                serial_printf("# Warning: Eliminate engine auto stop cancelled.\n");
+                                printf_("# Warning: Eliminate engine auto stop cancelled.\n");
                             }
                             Status = CANCELLED;
                             led_blink(Status);
@@ -265,7 +265,7 @@ int main(void)
 	                            if(DebugMode == DEBUG)
                                     {
                                         // Output Warning message
-                                        serial_printf("# Warning: Eliminate engine auto stop failed\n");
+                                        printf_("# Warning: Eliminate engine auto stop failed\n");
                                     }
 
                                     Status = FAILED;
@@ -285,13 +285,14 @@ int main(void)
                                         can_rx(&rx_msg_header, rx_msg_data);
                                     } while(is_can_msg_pending(CAN_RX_FIFO0));
 
+                                    CcuStatus = READY;
                                     led_blink(Status);
                                 }
                             } else { // Unexpected case
                                 if(DebugMode == DEBUG)
                                 {
                                     // Output Warning message
-                                    serial_printf("# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
+                                    printf_("# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
                                 }
                             }
 
@@ -304,7 +305,7 @@ int main(void)
                         if(DebugMode == DEBUG)
                         {
                             // Output Warning message
-                            serial_printf("# Warning: Unexpected can id (0x%03x).\n", rx_msg_header.StdId);
+                            printf_("# Warning: Unexpected can id (0x%03x).\n", rx_msg_header.StdId);
                         }
 
                         break;
