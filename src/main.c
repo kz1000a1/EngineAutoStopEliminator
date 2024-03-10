@@ -165,8 +165,8 @@ int main(void)
                             TcuStatus = IDLING_STOP_OFF;
                             if (Retry != 0 && Status == PROCESSING) {
 	                        if(DebugMode == DEBUG){
-                                    // Output Warning message
-                                    printf_("# Warning: Eliminate engine auto stop succeeded.\n");
+                                    // Output Information message
+                                    printf_("# Information: Eliminate engine auto stop succeeded.\n");
                                 }
                                 Status = SUCCEEDED;
                                 led_blink(Status);
@@ -175,8 +175,8 @@ int main(void)
                             TcuStatus = IDLING_STOP_ON;
                             if (Status == SUCCEEDED) {
 	                        if(DebugMode == DEBUG){
-                                    // Output Warning message
-                                    printf_("# Warning: Eliminate engine auto stop restarted.\n");
+                                    // Output Information message
+                                    printf_("# Information: Eliminate engine auto stop restarted.\n");
                                 }
                                 Status = PROCESSING;
                                 led_blink(Status);
@@ -196,8 +196,8 @@ int main(void)
                             Retry = 0;
                         } else if (rx_msg_data[6] & 0x40) {
                             if(DebugMode == DEBUG){
-                                // Output Warning message
-                                printf_("# Warning: Eliminate engine auto stop cancelled.\n");
+                                // Output Information message
+                                printf_("# Information: Eliminate engine auto stop cancelled.\n");
                             }
                             Status = CANCELLED;
                             led_blink(Status);
