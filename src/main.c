@@ -164,20 +164,14 @@ int main(void)
                         } else if (rx_msg_data[4] == 0xc0) {
                             TcuStatus = IDLING_STOP_OFF;
                             if (Retry != 0 && Status == PROCESSING) {
-	                        if(DebugMode == DEBUG){
-                                    // Output Information message
-                                    printf_("# Information: Eliminate engine auto stop succeeded.\n");
-                                }
+	                        dprintf_("# Information: Eliminate engine auto stop succeeded.\n");
                                 Status = SUCCEEDED;
                                 led_blink(Status);
                             }
                         } else {
                             TcuStatus = IDLING_STOP_ON;
                             if (Status == SUCCEEDED) {
-	                        if(DebugMode == DEBUG){
-                                    // Output Information message
-                                    printf_("# Information: Eliminate engine auto stop restarted.\n");
-                                }
+	                        dprintf_("# Information: Eliminate engine auto stop restarted.\n");
                                 Status = PROCESSING;
                                 led_blink(Status);
                                 CcuStatus = NOT_READY;
@@ -195,10 +189,7 @@ int main(void)
                             led_blink(Status);
                             Retry = 0;
                         } else if (rx_msg_data[6] & 0x40) {
-                            if(DebugMode == DEBUG){
-                                // Output Information message
-                                printf_("# Information: Eliminate engine auto stop cancelled.\n");
-                            }
+                            dprintf_("# Information: Eliminate engine auto stop cancelled.\n");
                             Status = CANCELLED;
                             led_blink(Status);
                         } else if (Status == PROCESSING) {
@@ -206,10 +197,7 @@ int main(void)
                                 CcuStatus = READY;
                             } else if (TcuStatus == IDLING_STOP_ON) { // Transmit message for eliminate engine auto stop
                                 if (MAX_RETRY <= Retry) { // Previous eliminate engine auto stop message failed
-                                    if(DebugMode == DEBUG){
-                                        // Output Warning message
-                                        printf_("# Warning: Eliminate engine auto stop failed\n");
-                                    }
+                                    dprintf_("# Warning: Eliminate engine auto stop failed\n");
                                     Status = FAILED;
                                     led_blink(Status);
                                 } else {
@@ -226,20 +214,14 @@ int main(void)
                                     led_blink(Status);
                                 }
                             } else { // Unexpected case
-                                if(DebugMode == DEBUG){
-                                    // Output Warning message
-                                    printf_("# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
-                                }
+                                dprintf_("# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
                             }
                         }
                         PreviousCanId = rx_msg_header.StdId;
                         break;
 
                     default: // Unexpected can id
-                        if(DebugMode == DEBUG){
-                            // Output Warning message
-                            printf_("# Warning: Unexpected can id (0x%03x).\n", rx_msg_header.StdId);
-                        }
+                        dprintf_("# Warning: Unexpected can id (0x%03x).\n", rx_msg_header.StdId);
                         break;
                 }
             }
