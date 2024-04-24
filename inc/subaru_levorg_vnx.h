@@ -1,7 +1,21 @@
 #ifndef __SUBARU_LEVORG_VNX_H__
 #define __SUBARU_LEVORG_VNX_H__
 
-/* #define DEBUG_MODE */
+/* #define for DEBUG_MODE */
+#define no_printf_(fmt, ...)         \
+({                                   \
+	if (0)                           \
+		printf_(fmt, ##__VA_ARGS__); \
+	0;                               \
+})
+
+#ifdef DEBUG_MODE
+#define dprintf_(fmt, ...) \
+	printf_(fmt, ##__VA_ARGS__)
+#else
+#define dprintf_(fmt, ...) \
+	no_printf_(fmt, ##__VA_ARGS__)
+#endif
 
 // Receive Only Two CAN Ids
 #define CAN_ID_CCU 0x390
