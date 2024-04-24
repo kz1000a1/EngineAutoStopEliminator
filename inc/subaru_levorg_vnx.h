@@ -2,16 +2,16 @@
 #define __SUBARU_LEVORG_VNX_H__
 
 /* #define for DEBUG_MODE */
-#define no_printf_(fmt, ...)         \
-({                                   \
-	if (0)                           \
+#define no_printf_(fmt, ...)                 \
+({                                           \
+	if (0)                               \
 		printf_(fmt, ##__VA_ARGS__); \
-	0;                               \
+	0;                                   \
 })
 
 #ifdef DEBUG_MODE
 #define dprintf_(fmt, ...) \
-	printf_(fmt, ##__VA_ARGS__)
+	DebugMode==DEBUG?printf_(fmt, ##__VA_ARGS__):no_printf_(fmt, ##__VA_ARGS__)
 #else
 #define dprintf_(fmt, ...) \
 	no_printf_(fmt, ##__VA_ARGS__)
