@@ -210,6 +210,7 @@ int main(void)
                                     while(is_can_msg_pending(CAN_RX_FIFO0)){
                                         can_rx(&rx_msg_header, rx_msg_data);
                                     }
+				    rx_msg_header.StdId = CAN_ID_TCU;
                                     CcuStatus = NOT_READY;
                                     led_blink(Status);
                                 }
