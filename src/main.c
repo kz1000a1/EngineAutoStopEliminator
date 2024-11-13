@@ -161,21 +161,23 @@ int main(void)
                     case CAN_ID_TCU:
                         if ((rx_msg_data[2] & 0x08) != 0x08) {
                             TcuStatus = NOT_READY;
-                        } else if (rx_msg_data[4] == 0xc0) {
-                            TcuStatus = IDLING_STOP_OFF;
-                            if (Retry != 0 && Status == PROCESSING) {
-	                        dprintf_("# Information: Eliminate engine auto stop succeeded.\n");
-                                Status = SUCCEEDED;
-                                led_blink(Status);
-                            }
                         } else {
-                            TcuStatus = IDLING_STOP_ON;
-                            if (Status == SUCCEEDED) {
-	                        dprintf_("# Information: Eliminate engine auto stop restarted.\n");
-                                Status = PROCESSING;
-                                led_blink(Status);
-                                CcuStatus = NOT_READY;
-                                Retry = 0;
+			    if (rx_msg_data[4] == 0xc0) {
+                                TcuStatus = IDLING_STOP_OFF;
+                                if (Retry != 0 && Status == PROCESSING) {
+	                            dprintf_("# Information: Eliminate engine auto stop succeeded.\n");
+                                    Status = SUCCEEDED;
+                                    led_blink(Status);
+                                }
+                            } else {
+                                TcuStatus = IDLING_STOP_ON;
+                                if (Status == SUCCEEDED) {
+	                            dprintf_("# Information: Eliminate engine auto stop restarted.\n");
+                                    Status = PROCESSING;
+                                    led_blink(Status);
+                                    CcuStatus = NOT_READY;
+                                    Retry = 0;
+				}
                             }
                         }
                         PreviousCanId = rx_msg_header.StdId;
@@ -188,35 +190,47 @@ int main(void)
                             Status = PROCESSING;
                             led_blink(Status);
                             Retry = 0;
-                        } else if (rx_msg_data[6] & 0x40) {
-                            dprintf_("# Information: Eliminate engine auto stop cancelled.\n");
-                            Status = CANCELLED;
-                            led_blink(Status);
-                        } else if (Status == PROCESSING) {
-                            if (CcuStatus == NOT_READY || CcuStatus == ENGINE_STOP || TcuStatus == IDLING_STOP_OFF) {
-                                CcuStatus = READY;
-                            } else if (TcuStatus == IDLING_STOP_ON) { // Transmit message for eliminate engine auto stop
-                                if (MAX_RETRY <= Retry) { // Previous eliminate engine auto stop message failed
-                                    dprintf_("# Warning: Eliminate engine auto stop failed\n");
-                                    Status = FAILED;
-                                    led_blink(Status);
-                                } else {
-                                    Retry++;
-                                    led_blink(Retry);
-                                    // HAL_Delay(50); // 50ms delay like real CCU
-                                    HAL_Delay(50 / 2);
-                                    send_cancel_frame(rx_msg_data); // Transmit message
-                                    // Discard message(s) that received during HAL_delay()
-                                    while(is_can_msg_pending(CAN_RX_FIFO0)){
-                                        can_rx(&rx_msg_header, rx_msg_data);
-                                    }
-				    rx_msg_header.StdId = CAN_ID_TCU;
-                                    CcuStatus = NOT_READY;
-                                    led_blink(Status);
-                                }
-                            } else { // Unexpected case
-                                dprintf_("# Warning: Unexpected case (CCU=%d TCU=%d).\n", CcuStatus, TcuStatus);
+                        } else {
+			    if (rx_msg_data[6] & 0x40) {
+                                dprintf_("# Information: Eliminate engine auto stop cancelled.\n");
+                                Status = CANCELLED;
+                                led_blink(Status);
                             }
+			    switch(Status){
+				case PROCESSING:
+                                    switch(CcuStatus){
+					case READY:
+					    if (TcuStatus == IDLING_STOP_ON) { // Transmit message for eliminate engine auto stop
+                                                if (MAX_RETRY <= Retry) { // Previous eliminate engine auto stop message failed
+                                                    dprintf_("# Warning: Eliminate engine auto stop failed\n");
+                                                    Status = FAILED;
+                                                    led_blink(Status);
+                                                } else {
+                                                    Retry++;
+                                                    led_blink(Retry);
+                                                    // HAL_Delay(50); // 50ms delay like real CCU
+                                                    HAL_Delay(50 / 2);
+                                                    send_cancel_frame(rx_msg_data); // Transmit message
+                                                    // Discard message(s) that received during HAL_delay()
+                                                    while(is_can_msg_pending(CAN_RX_FIFO0)){
+                                                        can_rx(&rx_msg_header, rx_msg_data);
+                                                    }
+				                    rx_msg_header.StdId = CAN_ID_TCU;
+                                                    CcuStatus = NOT_READY;
+                                                    led_blink(Status);
+                                                }
+					    }
+					    break;
+
+				        case ENGINE_STOP:
+				        case NOT_READY:
+                                            CcuStatus = READY;
+				            break;
+				    }
+
+				default: // SUCCEEDED or FAILED or CANCELLED
+				    break;
+			    }
                         }
                         PreviousCanId = rx_msg_header.StdId;
                         break;
