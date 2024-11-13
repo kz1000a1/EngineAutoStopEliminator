@@ -21,11 +21,16 @@
 #define CAN_ID_CCU 0x390
 #define CAN_ID_TCU 0x174
 
-// CCU and TCU STATUS
-enum cu_status {
+// CCU STATUS
+enum ccu_status {
     ENGINE_STOP,
     NOT_READY,
-    READY,
+    READY
+};
+
+// TCU STATUS
+enum tcu_status {
+    NOT_READY,
     IDLING_STOP_ON,
     IDLING_STOP_OFF
 };
