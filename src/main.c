@@ -175,7 +175,7 @@ int main(void)
 	                            dprintf_("# Information: Eliminate engine auto stop restarted.\n");
                                     Status = PROCESSING;
                                     led_blink(Status);
-                                    CcuStatus = NOT_READY;
+                                    CcuStatus = PAUSE;
                                     Retry = 0;
 				}
                             }
@@ -216,14 +216,14 @@ int main(void)
                                                         can_rx(&rx_msg_header, rx_msg_data);
                                                     }
 				                    rx_msg_header.StdId = CAN_ID_TCU;
-                                                    CcuStatus = NOT_READY;
+                                                    CcuStatus = PAUSE;
                                                     led_blink(Status);
                                                 }
 					    }
 					    break;
 
 				        case ENGINE_STOP:
-				        case NOT_READY:
+				        case PAUSE:
                                             CcuStatus = READY;
 				            break;
 				    }
