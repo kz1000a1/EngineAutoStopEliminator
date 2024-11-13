@@ -24,7 +24,7 @@
 // CCU STATUS
 enum ccu_status {
     ENGINE_STOP,
-    NOT_READY,
+    WAIT,
     READY
 };
 
