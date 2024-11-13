@@ -123,8 +123,8 @@ int main(void)
     CAN_RxHeaderTypeDef rx_msg_header;
     uint8_t rx_msg_data[8] = {0};
 
-    static enum cu_status TcuStatus = ENGINE_STOP;
-    static enum cu_status CcuStatus = ENGINE_STOP;
+    static enum tcu_status TcuStatus = NOT_READY;
+    static enum ccu_status CcuStatus = ENGINE_STOP;
     static enum status Status = PROCESSING;
     static uint16_t PreviousCanId = CAN_ID_CCU;
     static uint8_t Retry = 0;
@@ -185,8 +185,8 @@ int main(void)
 
                     case CAN_ID_CCU:
                         if (PreviousCanId == CAN_ID_CCU) { // TCU don't transmit message
+                            TcuStatus = NOT_READY;
                             CcuStatus = ENGINE_STOP;
-                            TcuStatus = ENGINE_STOP;
                             Status = PROCESSING;
                             led_blink(Status);
                             Retry = 0;
